@@ -15,18 +15,18 @@ jobs:
         with:
           node-version: '20'
           
-      - name: Install PWABuilder
-        run: npm install -g @pwabuilder/cli
+      - name: Install PWA Builder CLI
+        run: npm install -g @bubblewrap/cli
         
-      - name: Build APK
+      - name: Generate Android project from manifest
         run: |
-          mkdir -p app
-          cp -r * app/
-          cd app
-          npx @pwabuilder/cli build android --fallback --output ../output
+          npx @bubblewrap/cli init --manifest https://raw.githubusercontent.com/${{ github.repository }}/main/manifest.json
           
+      - name: Build APK
+        run: npx @bubblewrap/cli build
+        
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: dashboard-apk
-          path: output/*.apk
+          path: app-release-unsigned.apk
